@@ -1,0 +1,18 @@
+version: '3'
+services:
+  backend: 
+    build: ./backend
+    image: goloang
+    command: go run main.go
+    volumes:
+      - ./backend:/go/src/app
+    ports:
+      - 8080:8080
+
+  # frontend:
+  #   image: next-frontend
+  #   command: npm run dev
+  #   volumes:
+  #     - ./frontend:/app
+  #   ports:
+  #     - 3000:3000
