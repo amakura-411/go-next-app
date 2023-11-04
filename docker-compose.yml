@@ -1,18 +1,13 @@
 version: '3'
 services:
-  backend: 
-    build: ./backend
-    image: goloang
-    command: go run main.go
+  backend:
+    container_name: backend
+    build:
+      context: ./backend
+      dockerfile: ./build/dockerfile 
+    image: golang
     volumes:
       - ./backend:/go/src/app
     ports:
-      - 8080:8080
-
-  # frontend:
-  #   image: next-frontend
-  #   command: npm run dev
-  #   volumes:
-  #     - ./frontend:/app
-  #   ports:
-  #     - 3000:3000
+      - "8080:8080"
+    tty: true # コンテナの永続化 
