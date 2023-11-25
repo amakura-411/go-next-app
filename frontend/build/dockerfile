@@ -1,15 +1,12 @@
-# ベースイメージを指定
-FROM golang:1.12
-
+# ベースイメージの指定
+FROM node:21.12
 # コンテナ内に作業ディレクトリを作成
-WORKDIR /backend/app
+WORKDIR /frontend/app
 # ホストのファイルをコンテナの作業ディレクトリに移行
 COPY . .
 # ポート番号を環境変数に設定
-EXPOSE 8080
+EXPOSE 3000
 # 依存ライブラリをインストール
-RUN go mod download
-# アプリケーションをビルド
-RUN go build -o main main.go
+RUN npm install
 # アプリケーションを実行
-CMD /backend/app/main
+CMD npm run dev

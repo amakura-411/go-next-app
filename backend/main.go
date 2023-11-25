@@ -14,8 +14,5 @@ func main() {
 	fmt.Println("Hello World!!")
 
 	server.StartServer()
-
-
-
 }
 

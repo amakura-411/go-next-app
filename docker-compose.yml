@@ -11,3 +11,15 @@ services:
     ports:
       - "8080:8080"
     tty: true # コンテナの永続化 
+  # frontend:
+  #   container_name: frontend
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: ./build/dockerfile
+  #   image: node
+  #   volumes:
+  #     - ./frontend:/app
+  #   ports:
+  #     - "3000:3000"
+  #   tty: true # コンテナの永続化
+
