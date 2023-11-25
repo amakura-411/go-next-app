@@ -6,6 +6,8 @@ WORKDIR /frontend/app
 COPY . .
 # ポート番号を環境変数に設定
 EXPOSE 3000
+# ホットリロードを有効にする
+ENV CHOKIDAR_USEPOLLING=true
 # 依存ライブラリをインストール
 RUN npm install
 # アプリケーションを実行
