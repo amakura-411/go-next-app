@@ -1,15 +1,15 @@
 # ベースイメージを指定
-FROM golang:1.12
+FROM golang:1.21.3
 
 # コンテナ内に作業ディレクトリを作成
-WORKDIR /backend/app
+WORKDIR /backend/my-app
+
 # ホストのファイルをコンテナの作業ディレクトリに移行
 COPY . .
 # ポート番号を環境変数に設定
 EXPOSE 8080
-# 依存ライブラリをインストール
-RUN go mod download
-# アプリケーションをビルド
-RUN go build -o main main.go
-# アプリケーションを実行
-CMD /backend/app/main
+
+
+RUN go install github.com/cosmtrek/air@latest
+
+CMD ["air", "-c", ".air.toml"]
