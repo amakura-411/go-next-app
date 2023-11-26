@@ -1,14 +1,23 @@
 # ベースイメージの指定
-FROM node:21.12
+FROM node:21.1.0
+
 # コンテナ内に作業ディレクトリを作成
-WORKDIR /frontend/app
+WORKDIR /frontend/my-app
+
+# 環境変数の設定
+ENV WATCHPACK_POLLING=true
+
 # ホストのファイルをコンテナの作業ディレクトリに移行
 COPY . .
+
+# フロントエンドの依存ライブラリをインストール
+RUN npm install -g npm@7.24.0
+
+# 依存ライブラリをインストール
+
+
 # ポート番号を環境変数に設定
 EXPOSE 3000
-# ホットリロードを有効にする
-ENV CHOKIDAR_USEPOLLING=true
-# 依存ライブラリをインストール
-RUN npm install
+
 # アプリケーションを実行
-CMD npm run dev
+CMD ["npm", "run", "dev"]

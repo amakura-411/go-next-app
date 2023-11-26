@@ -1,25 +1,31 @@
 version: '3'
 services:
-  backend:
-    container_name: backend
-    build:
-      context: ./backend
-      dockerfile: ./build/dockerfile 
-    image: golang
-    volumes:
-      - ./backend:/go/src/app
-    ports:
-      - "8080:8080"
-    tty: true # コンテナの永続化 
-  # frontend:
-  #   container_name: frontend
+  # backend:
+  #   container_name: backend
   #   build:
-  #     context: ./frontend
-  #     dockerfile: ./build/dockerfile
-  #   image: node
+  #     context: ./backend
+  #     dockerfile: ./build/dockerfile 
+  #   image: golang
   #   volumes:
-  #     - ./frontend:/app
+  #     - ./backend:/go/src/app
   #   ports:
-  #     - "3000:3000"
-  #   tty: true # コンテナの永続化
+  #     - "8080:8080"
+  #   tty: true # コンテナの永続化 
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend/build  # Dockerfileのビルドコンテキストの場所
+      dockerfile: dockerfile     # Dockerfileの名前（必要に応じて変更）
+    image: node:21.1.0
+    volumes:
+      - ./frontend/my-app:/frontend/my-app
+      - ./frontend/my-app/node_modules:/frontend/my-app/node_modules 
+    ports:
+      - "3000:3000"
+    environment:
+      - ENV CHOKIDAR_USEPOLLING=true
+      - ENV WATCHPACK_POLLING=true
+    stdin_open: true
+    tty: true
+
 
