@@ -5,10 +5,10 @@ import (
 	"net/http"
 )
 
-//8080ポートにアクセスがあったら、serverHandlerを呼び出す
+// 8080ポートにアクセスがあったら、serverHandlerを呼び出す
 func serverHandler(w http.ResponseWriter, r *http.Request) {
 	//Fprintfは、第一引数にio.Writerを受け取るので、ResponseWriterを渡す
-	fmt.Fprintf(w, "Hello World! from serverHandler ok")
+	fmt.Fprintf(w, "Hello Golang World! from serverHandler ok")
 }
 
 func StartServer() {
