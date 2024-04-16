@@ -6,22 +6,12 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// 8080ポートにアクセスがあったら、serverHandlerを呼び出す
-func serverHandler(w http.ResponseWriter, r *http.Request) {
-	//Fprintfは、第一引数にio.Writerを受け取るので、ResponseWriterを渡す
-	fmt.Fprintf(w, "Hello Golang World! from serverHandler ok")
-}
-
 func StartServer() {
 	e := echo.New()
 	e.GET("/", func(c echo.Context) error{
-		// serverHandler;
+		// port:1323の画面に表示させる
 		return c.String(http.StatusOK, "Hello World!")
 	})
 	e.Logger.Fatal(e.Start(":1323"))
+	fmt.Fprint("port:1323 OPEN")
 }
-
-// func StopServer() {
-
-// 	fmt.Println("Stop Server")
-// }
