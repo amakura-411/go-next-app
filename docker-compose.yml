@@ -9,7 +9,7 @@ services:
     volumes:
       - ./backend/my-app:/backend/my-app
     ports:
-      - "8080:8080"
+      - "1323:1323"
     tty: true # コンテナの永続化 
   frontend:
     container_name: frontend

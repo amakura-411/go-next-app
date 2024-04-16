@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 	"net/http"
+	"github.com/labstack/echo/v4"
 )
 
 // 8080ポートにアクセスがあったら、serverHandlerを呼び出す
@@ -12,10 +13,12 @@ func serverHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func StartServer() {
-	// localhost:8080にアクセスがあったら、serverHandlerを呼び出す
-	http.HandleFunc("/", serverHandler)
-	// 8080ポートでサーバーを立ち上げる
-	http.ListenAndServe(":8080", nil)
+	e := echo.New()
+	e.GET("/", func(c echo.Context) error{
+		// serverHandler;
+		return c.String(http.StatusOK, "Hello World!")
+	})
+	e.Logger.Fatal(e.Start(":1323"))
 }
 
 // func StopServer() {

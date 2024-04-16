@@ -1,5 +1,5 @@
 # ベースイメージを指定
-FROM golang:1.21.3
+FROM golang:1.22.2
 
 # コンテナ内に作業ディレクトリを作成
 WORKDIR /backend/my-app
