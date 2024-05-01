@@ -227,12 +227,14 @@ curl -i --request POST 'http://localhost:1323/v1/project' \
   "project_description": "This is a test project",
   "goal_date": "2020-11-02T14:50:46Z",
   "display_flag": TRUE,
+  "category": "work"
 }'
 ```
 
 - user_id はログイン中のユーザーの ID
 - goal_date は期限日
 - display_flag は表示するかどうか
+- category はプロジェクトのカテゴリ
 
 `Response`
 
@@ -244,6 +246,7 @@ curl -i --request POST 'http://localhost:1323/v1/project' \
   "project_description": "This is a test project",
   "goal_date": "2020-11-02T14:50:46Z",
   "display_flag": TRUE,
+  "category": "work",
   "created_at": "2020-11-02T14:50:46Z",
   "updated_at": "2020-11-02T14:50:46Z"
 }
@@ -269,11 +272,12 @@ curl -I --request GET 'http://localhost:1323/v1/projects' \
 [
   {
     "id": "5cf59c6c-0047-4b13-a118-65878313e329",
-    "user_id" : "5cf59c6c-0047-4b13-a118-65878313e329"
+    "user_id" : "5cf59c6c-0047-4b13-a118-65878313e329",
     "project_title": "Test Project",
     "project_description": "This is a test project",
     "goal_date": "2020-11-02T14:50:46Z",
     "display_flag": TRUE,
+    "category": "work",
     "created_at": "2020-11-02T14:50:46Z",
     "updated_at": "2020-11-02T14:50:46Z",
   }
@@ -304,6 +308,7 @@ curl -I --request GET 'http://localhost:1323/v1/project/{{project_id}}' \
   "project_description": "This is a test project",
   "goal_date": "2020-11-02T14:50:46Z",
   "display_flag": TRUE,
+  "category": "work",
   "created_at": "2020-11-02T14:50:46Z",
   "updated_at": "2020-11-02T14:50:46Z",
 }
@@ -323,6 +328,7 @@ Authorization Bearer <session_id>'
   "project_description": "This is an updated test project",
   "goal_date": "2020-11-02T14:50:46Z",
   "display_flag": TRUE,
+  "category": "work"
 }'
 ```
 
@@ -336,6 +342,7 @@ Authorization Bearer <session_id>'
   "project_description": "This is an updated test project",
   "goal_date": "2020-11-02T14:50:46Z",
   "display_flag": TRUE,
+  "category": "work",
   "created_at": "2020-11-02T14:50:46Z",
   "updated_at": "2020-11-02T14:50:46Z",
 }
