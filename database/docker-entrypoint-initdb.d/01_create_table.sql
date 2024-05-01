@@ -1,7 +1,7 @@
--- users の作成
--- ユーザーがいる。
+
+-- ユーザー
 CREATE TABLE USERS (
-  id VARCHAR(255) PRIMARY KEY,
+  user_id VARCHAR(255) PRIMARY KEY,
   username VARCHAR(255) NOT NULL,
   password VARCHAR(255) NOT NULL,
   icon VARCHAR(255),
@@ -9,30 +9,44 @@ CREATE TABLE USERS (
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- プロジェクトがある
-CREATE TABLE PROJECTS (
+-- カテゴリー
+CREATE TABLE CATEGORIES (
   id VARCHAR(255) PRIMARY KEY,
+  category_name VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- プロジェクト
+CREATE TABLE PROJECTS (
+  project_id VARCHAR(255) PRIMARY KEY,
+  assigned_user_id VARCHAR(255) NOT NULL,
   project_title VARCHAR(255) NOT NULL,
   project_description TEXT,
   goal_date : TIMESTAMP NOT NULL,
-  -- 表示・非表示
+  category VARCHAR(255),
   display_flag BOOLEAN DEFAULT TRUE,
-  -- ダッシュボードで利用
   task_counts INTEGER NOT NULL DEFAULT 0,
   task_done_counts INTEGER NOT NULL DEFAULT 0
-  -- 自動連番
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  assigned_user_id VARCHAR(255) NOT NULL,
-  FOREIGN KEY (user_id) REFERENCES USERS(id)
+  FOREIGN KEY (assigned_user_id) REFERENCES USERS(user_id)
+  FOREIGN KEY (category) REFERENCES CATEGORIES(id)
+);
+
+-- プロジェクトとユーザーの関係
+CREATE TABLE PROJECTS_USER (
+  p_uid VARCHAR(255) PRIMARY KEY,
+  project_id VARCHAR(255) NOT NULL,
+  user_id VARCHAR(255) NOT NULL,
+  FOREIGN KEY (project_id) REFERENCES PROJECTS(project_id),
+  FOREIGN KEY (user_id) REFERENCES USERS(user_id)
 );
 
 
-
-
--- プロジェクトにはタスクがある
+-- タスク
 CREATE TABLE TASK (
-  id VARCHAR(255) PRIMARY KEY,
+  task_id VARCHAR(255) PRIMARY KEY,
   task_title VARCHAR(255) NOT NULL,
   task_description TEXT,
   deadline TIMESTAMP NOT NULL,
@@ -46,29 +60,19 @@ CREATE TABLE TASK (
 );
 
 
--- １つのプロジェクトには、複数のタスクがある
+-- タスクとプロジェクトの関係
 CREATE TABLE PROJECTS_TASKS (
   id VARCHAR(255) PRIMARY KEY,
   project_id VARCHAR(255) NOT NULL,
   task_id VARCHAR(255) NOT NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  category VARCHAR(255),
   FOREIGN KEY (project_id) REFERENCES PROJECTS(id),
   FOREIGN KEY (task_id) REFERENCES TASKS(id)
-  FOREIGN KEY (category) REFERENCES CATEGORIES(id)
-);
-
-CREATE TABLE CATEGORIES (
-  id VARCHAR(255) PRIMARY KEY,
-  category_name VARCHAR(255) NOT NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 
--- タスクにはコメントがある
-CREATE TABLE TASK_COMMENTS (
+
+-- タスクとコメントの関係
+CREATE TABLE TASKS_COMMENTS (
   id VARCHAR(255) PRIMARY KEY,
   task_id VARCHAR(255) NOT NULL,
   user_id VARCHAR(255) NOT NULL,
@@ -80,7 +84,8 @@ CREATE TABLE TASK_COMMENTS (
 );
 
 
-CREATE TABLE TASK_NOTIFICATIONS (
+-- タスクと通知の関係
+CREATE TABLE TASKS_NOTIFICATIONS (
   id VARCHAR(255) PRIMARY KEY,
   notification_time TIME,
   monday_notification BOOLEAN DEFAULT FALSE,
@@ -93,4 +98,25 @@ CREATE TABLE TASK_NOTIFICATIONS (
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+
+
+CREATE TABLE SCHEDULES(
+  schedule_id VARCHAR(255) PRIMARY KEY,
+  schedule_title VARCHAR(255) NOT NULL,
+  -- 時間
+  start_time TIMESTAMP NOT NULL,
+  end_time TIMESTAMP NOT NULL,
+  -- 日付
+  start_date TIMESTAMP NOT NULL,
+  end_date TIMESTAMP NOT NULL,
+  -- 重要度
+  priority ENUM('low', 'middle', 'high') DEFAULT 'middle',
+  -- 完了フラグ
+  done_flag BOOLEAN DEFAULT FALSE,
+)
+
+
+
+
 
