@@ -4,23 +4,26 @@
 
 # API について
 
-| エンドポイント                     | HTTP メソッド | 説明                               |
-| ---------------------------------- | ------------- | ---------------------------------- |
-| /v1/users                          | POST          | アカウントの作成を行う             |
-| /v1/users                          | GET           | アカウント一覧を取得する           |
-| /v1/user/{{user_id}}               | GET           | アカウント情報を取得する           |
-| /v1/user/{{user_id}}               | POST          | アカウントの情報を更新する         |
-| /v1/user/{{user_id}}               | DELETE        | アカウントを削除する               |
-| /v1/auth/login                     | POST          | ログイン                           |
-| /v1/auth/logout                    | DELETE        | ログアウト                         |
-| /v1/auth/                          | GET           | ログインされているか               |
-| /v1/project                        | POST          | プロジェクトの作成                 |
-| /v1/projects                       | GET           | プロジェクト一覧を取得する         |
-| /v1/project/{{project_id}}         | GET           | プロジェクトの情報を取得する       |
-| /v1/project/{{project_id}}         | POST          | プロジェクトの情報を更新する       |
-| /v1/project/{{project_id}}         | DELETE        | プロジェクトを削除する             |
-| /v1/project/{{project_id}}/members | POST          | プロジェクトにメンバーを追加する   |
-| /v1/project/{{project_id}}/members | DELETE        | プロジェクトからメンバーを削除する |
+| エンドポイント                               | HTTP メソッド | 説明                               |
+| -------------------------------------------- | ------------- | ---------------------------------- |
+| /v1/users                                    | POST          | アカウントの作成を行う             |
+| /v1/users                                    | GET           | アカウント一覧を取得する           |
+| /v1/user/{{user_id}}                         | GET           | アカウント情報を取得する           |
+| /v1/user/{{user_id}}                         | POST          | アカウントの情報を更新する         |
+| /v1/user/{{user_id}}                         | DELETE        | アカウントを削除する               |
+| /v1/auth/login                               | POST          | ログイン                           |
+| /v1/auth/logout                              | DELETE        | ログアウト                         |
+| /v1/auth/                                    | GET           | ログインされているか               |
+| /v1/project                                  | POST          | プロジェクトの作成                 |
+| /v1/projects                                 | GET           | プロジェクト一覧を取得する         |
+| /v1/project/{{project_id}}                   | GET           | プロジェクトの情報を取得する       |
+| /v1/project/{{project_id}}                   | POST          | プロジェクトの情報を更新する       |
+| /v1/project/{{project_id}}                   | DELETE        | プロジェクトを削除する             |
+| /v1/project/{{project_id}}/tasks             | POST          | プロジェクトにタスクを追加する     |
+| /v1/project/{{project_id}}/tasks             | GET           | プロジェクトのタスク一覧を取得する |
+| /v1/project/{{project_id}}/tasks/{{task_id}} | GET           | プロジェクトのタスク情報を取得する |
+| /v1/project/{{project_id}}/tasks/{{task_id}} | POST          | プロジェクトのタスク情報を更新する |
+| /v1/project/{{project_id}}/tasks/{{task_id}} | DELETE        | プロジェクトのタスクを削除する     |
 
 # リクエストとレスポンス
 
@@ -249,7 +252,7 @@ curl -i --request POST 'http://localhost:1323/v1/project' \
 ### プロジェクトの一覧を取得する
 
 - 一覧を表示する
-- ただし、display_flag が false かつメンバーでない時、非表示
+- ただし、display_flag が false かつ タスクの作成者でない場合は表示しない
 
 ```bash
 curl -I --request GET 'http://localhost:1323/v1/projects' \
@@ -266,18 +269,13 @@ curl -I --request GET 'http://localhost:1323/v1/projects' \
 [
   {
     "id": "5cf59c6c-0047-4b13-a118-65878313e329",
+    "user_id" : "5cf59c6c-0047-4b13-a118-65878313e329"
     "project_title": "Test Project",
     "project_description": "This is a test project",
     "goal_date": "2020-11-02T14:50:46Z",
     "display_flag": TRUE,
     "created_at": "2020-11-02T14:50:46Z",
     "updated_at": "2020-11-02T14:50:46Z",
-    "members" : [
-      {
-        "user_id": "5cf59c6c-0047-4b13-a118-65878313e329",
-        "user_name": "Test",
-      }
-    ]
   }
 ]
 ```
@@ -285,8 +283,7 @@ curl -I --request GET 'http://localhost:1323/v1/projects' \
 ### プロジェクトの情報を取得する
 
 - project の詳細を表示する
-- ただし、閲覧権限があるかどうかは、project のメンバーかどうかで判断する
-- もし、メンバーでない場合、403 エラーを返し、リダイレクトする
+- ただし、display_flag が false かつ タスクの作成者でない場合は表示しない
 
 ```bash
 curl -I --request GET 'http://localhost:1323/v1/project/{{project_id}}' \
@@ -302,22 +299,19 @@ curl -I --request GET 'http://localhost:1323/v1/project/{{project_id}}' \
 ```json
 {
   "id": "5cf59c6c-0047-4b13-a118-65878313e329",
+  "user_id" : "5cf59c6c-0047-4b13-a118-65878313e329"
   "project_title": "Test Project",
   "project_description": "This is a test project",
   "goal_date": "2020-11-02T14:50:46Z",
   "display_flag": TRUE,
   "created_at": "2020-11-02T14:50:46Z",
   "updated_at": "2020-11-02T14:50:46Z",
-  "members" : [
-    {
-      "user_id": "5cf59c6c-0047-4b13-a118-65878313e329",
-      "user_name": "Test",
-    }
-  ]
 }
 ```
 
 ### プロジェクトの情報を更新する
+- project の情報を更新する
+- ただし、更新権限があるかどうかは、projectの作成者かどうかで判断する
 
 ```bash
 curl -I --request POST 'http://localhost:1323/v1/project/{{project_id}}' \
@@ -337,25 +331,20 @@ Authorization Bearer <session_id>'
 ```json
 {
   "id": "5cf59c6c-0047-4b13-a118-65878313e329",
+  "user_id" : "5cf59c6c-0047-4b13-a118-65878313e329",
   "project_title": "Updated Test Project",
   "project_description": "This is an updated test project",
   "goal_date": "2020-11-02T14:50:46Z",
   "display_flag": TRUE,
   "created_at": "2020-11-02T14:50:46Z",
   "updated_at": "2020-11-02T14:50:46Z",
-  "members" : [
-    {
-      "user_id": "5cf59c6c-0047-4b13-a118-65878313e329",
-      "user_name": "Test",
-    }
-  ]
 }
 ```
 
 ### プロジェクトを削除する
 
 - project を削除する
-- ただし、削除権限があるかどうかは、project のオーナーかどうかで判断する
+- ただし、削除権限があるかどうかは、project の作成者かどうかで判断する
 
 ```bash
 curl -I --request DELETE 'http://localhost:1323/v1/project/{{project_id}}' \
@@ -374,66 +363,11 @@ curl -I --request DELETE 'http://localhost:1323/v1/project/{{project_id}}' \
 }
 ```
 
-### プロジェクトにメンバーを追加する
-
-- project にメンバーを追加する
-- ただし、追加権限があるかどうかは、project のオーナーかどうかで判断する
-- 一度に複数人の追加も可能
-
-```bash
-curl -I --request POST 'http://localhost:1323/v1/project/{{project_id}}/members' \
---header 'Authorization Bearer <session_id>'
---header 'Content-Type: application/json' \
---data-raw '{
-  "user_id" : "5cf59c6c-0047-4b13-a118-65878313e329"
-  "add_users" :[
-    {
-      "user_id" : "5cf59c6c-0047-4b13-a118-65878313e329"
-    },
-    {
-      "user_id" : "5cf59c6c-0047-4b13-a118-65878313e329"
-    }
-  ]
-}'
-```
-
-`Response`
-
-```json
-{
-  "message": "member added successfully" or "You are not the owner of this project"
-}
-```
-
-### プロジェクトからメンバーを削除する
-
-- project に member を削除する
-- ただし、削除権限があるかどうかは、project のオーナーまたは本人かどうかで判断する
-
-```bash
-curl -I --request DELETE 'http://localhost:1323/v1/project/{{project_id}}/members' \
---header 'Authorization Bearer <session_id>'
---header 'Content-Type: application/json' \
---data-raw '{
-  "user_id" : "5cf59c6c-0047-4b13-a118-65878313e329"
-  "delete_user": "5cf59c6c-0047-4b13-a118-65878313e320"
-}'
-```
-
-`Response`
-
-```json
-{
-  "message": "member deleted successfully" or "You are not the owner of this project or you are not the member of this project"
-}
-```
 
 ### プロジェクトにタスクを追加する
 
 - project に task を追加する
-- task は、メンバーであれば誰でも追加・削除・修正が可能
-- なお、何らかの処理を行ったときは、メンバーに通知を送る
-- 作成者がアサインされる
+- タスクの追加は、作成者のみが行える
 
 ```bash
 curl -I --request POST 'http://localhost:1323/v1/project/{{project_id}}/tasks' \
@@ -466,7 +400,7 @@ curl -I --request POST 'http://localhost:1323/v1/project/{{project_id}}/tasks' \
 ### プロジェクトのタスク一覧を取得する
 
 - project の task 一覧を表示する
-- メンバーであれば。誰でも閲覧可能
+- projectが表示されている場合のみ、task が表示される
 
 ```bash
   curl -I --request GET 'http://localhost:1323/v1/project/{{project_id}}/tasks' \
@@ -495,6 +429,8 @@ curl -I --request POST 'http://localhost:1323/v1/project/{{project_id}}/tasks' \
 ```
 
 ### プロジェクトのタスク情報を取得する
+- project の task の詳細を表示する
+- project が表示されている場合のみ、task が表示される
 
 ```bash
 curl -I --request GET 'http://localhost:1323/v1/project/{{project_id}}/tasks/{{task_id}}' \
@@ -507,6 +443,9 @@ curl -I --request GET 'http://localhost:1323/v1/project/{{project_id}}/tasks/{{t
 ```
 
 ### プロジェクトのタスク情報を更新する
+- project の task の情報を更新する
+- project が表示されている場合のみ、task が表示される
+- タスクの更新は、作成者のみが行える
 
 ```bash
 curl -I --request POST 'http://localhost:1323/v1/project/{{project_id}}/tasks/{{task_id}}' \
@@ -521,7 +460,8 @@ curl -I --request POST 'http://localhost:1323/v1/project/{{project_id}}/tasks/{{
 ```
 
 ### プロジェクトのタスクを削除する
-
+- project の task を削除する
+- タスクの削除は、作成者のみが行える
 ```bash
 curl -I --request DELETE 'http://localhost:1323/v1/project/{{project_id}}/tasks/{{task_id}}' \
 --header 'Authorization Bearer <session_id>'

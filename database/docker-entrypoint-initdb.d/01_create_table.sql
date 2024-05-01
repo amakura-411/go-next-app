@@ -23,21 +23,12 @@ CREATE TABLE PROJECTS (
   -- 自動連番
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-);
-
--- ユーザーはプロジェクトに参加する
--- 複数のユーザーがプロジェクトに参加する
--- プロジェクトにはオーナーがおり、オーナーはプロジェクトを作成したユーザーがデフォルトとなる
-CREATE TABLE PROJECTS_MEMBERS (
-  id VARCHAR(255) PRIMARY KEY,
-  project_id VARCHAR(255) NOT NULL,
-  user_id VARCHAR(255) NOT NULL,
-  role ENUM('owner', 'member') DEFAULT 'member',
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (project_id) REFERENCES PROJECTS(id),
+  assigned_user_id VARCHAR(255) NOT NULL,
   FOREIGN KEY (user_id) REFERENCES USERS(id)
 );
+
+
+
 
 -- プロジェクトにはタスクがある
 CREATE TABLE TASK (
@@ -52,8 +43,6 @@ CREATE TABLE TASK (
   actual_time INTEGER NOT NULL DEFAULT 0
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  assigned_user_id VARCHAR(255) NOT NULL,
-  FOREIGN KEY (assigned_user_id) REFERENCES USERS(id),
 );
 
 
