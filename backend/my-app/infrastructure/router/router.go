@@ -2,27 +2,37 @@ package router
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/labstack/echo"
 )
 
-func InitRouting() (bool, error) {
+func InitRouting(e *echo.Echo) error {
 	fmt.Println("InitRouting!!")
-	e := echo.New()
 
-	// ルーティングの設定
+	// hello
 	e.GET("/hello", func(c echo.Context) error {
-		fmt.Println("Hello World!!")
 		return c.String(http.StatusOK, "Hello, World!")
 	})
 
-	if err := e.Start(":8080"); err != nil {
-		log.Fatal(err)
-	}
+	// user
+	gu := e.Group("/user")
+	gu.GET("", func(c echo.Context) error {
+		fmt.Println("GET /user")
+		return c.String(http.StatusOK, "GET /user")
+	})
+	gu.POST("", func(c echo.Context) error {
+		fmt.Println("POST /user")
+		return c.String(http.StatusOK, "POST /user")
+	})
+	gu.PUT("", func(c echo.Context) error {
+		fmt.Println("PUT /user")
+		return c.String(http.StatusOK, "PUT /user")
+	})
+	gu.DELETE("", func(c echo.Context) error {
+		fmt.Println("DELETE /user")
+		return c.String(http.StatusOK, "DELETE /user")
+	})
 
-	// Routes
-
-	return true, nil
+	return nil
 }
