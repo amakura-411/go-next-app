@@ -1,5 +1,5 @@
 # ベースイメージを指定
-FROM golang:1.22.2
+FROM golang:1.22
 
 # コンテナ内に作業ディレクトリを作成
 WORKDIR /backend/my-app
@@ -11,5 +11,9 @@ EXPOSE 8080
 
 
 RUN go install github.com/cosmtrek/air@latest
+
+RUN go mod download
+
+RUN go mod verify
 
 CMD ["air", "-c", ".air.toml"]

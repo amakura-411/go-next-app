@@ -1,8 +1,10 @@
 module go-next-app/backend/my-app
 
-go 1.21.3
+go 1.22
 
-require github.com/labstack/echo/v4 v4.12.0
+toolchain go1.22.2
+
+require github.com/labstack/echo v3.3.10+incompatible
 
 require (
 	github.com/labstack/gommon v0.4.2 // indirect
