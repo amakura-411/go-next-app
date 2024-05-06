@@ -4,10 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"my-app/domain/entity"
 	"time"
 
-	"github.com/google/uuid"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
@@ -27,37 +25,28 @@ func InitConnection() (*gorm.DB, error) {
 		"3306",
 		"mydb",
 	)
-
-	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
-		NamingStrategy: schema.NamingStrategy{
-			TablePrefix:   "",   // テーブル名のプレフィックスがある場合に指定
-			SingularTable: true, // テーブル名を単数形にする
-		},
-	})
+	// 接続するまで、何度もmysqlに接続する（5秒間隔）
+	for i := 0; i < 5; i++ {
+		DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
+			NamingStrategy: schema.NamingStrategy{
+				TablePrefix:   "",   // テーブル名のプレフィックスがある場合に指定
+				SingularTable: true, // テーブル名を単数形にする
+			},
+		})
+		if err == nil {
+			break
+		}
+		log.Printf("DB接続エラー: %v", err)
+		// ５秒待つ
+		time.Sleep(5 * time.Second)
+	}
 
 	if err != nil {
 		log.Printf("DB接続エラー: %v", err)
+
 		return nil, errors.New("DB接続エラー")
 	}
 
-	// userテーブルに値追加
-	DB.Create(&entity.User{
-		User_id:    uuid.New().String(),
-		Username:   "Test",
-		Password:   "Test",
-		Icon:       "default",
-		Created_at: time.Now(),
-		Updated_at: time.Now(), // UpdateAtフィールドの値を追加
-	})
-
-	// userテーブルに値を確認
-	var users []*entity.User
-	if err := DB.Find(&users).Error; err != nil {
-		fmt.Println("errorです")
-		return nil, err
-	}
-
-	fmt.Println(DB, "Database Connected")
 	fmt.Println("Database Connecting ...")
 	return DB, nil
 }

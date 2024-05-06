@@ -30,20 +30,6 @@ func (ur *UserRepository) GetUserByID(id int) (*user.User, error) {
 // GetAllUsersは全てのユーザーを取得する
 func (ur *UserRepository) GetAllUsers() ([]*user.User, error) {
 	var users []*user.User
-
-	// dbの接続確認
-	fmt.Println(ur.DB, "ur.DB")
-
-	// username Test　password Test
-	// ur.DB.Create(&user.User{
-	// 	User_id:   "1",
-	// 	UserName:  "Test",
-	// 	Password:  "Test",
-	// 	Icon:      "default",
-	// 	CreatedAt: time.Now(),
-	// 	UpdateAt:  time.Now(),
-	// })
-
 	if err := ur.DB.Find(&users).Error; err != nil {
 		fmt.Println("errorです")
 		return nil, err
