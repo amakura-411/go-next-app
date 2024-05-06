@@ -19,7 +19,7 @@ func NewUserRepository(db *gorm.DB) *UserRepository {
 }
 
 // GetUserByIDは指定されたIDのユーザーを取得する
-func (ur *UserRepository) GetUserByID(id int) (*user.User, error) {
+func (ur *UserRepository) GetUserByID(id string) (*user.User, error) {
 	var u user.User
 	if err := ur.DB.First(&u, id).Error; err != nil {
 		return nil, err
@@ -38,7 +38,7 @@ func (ur *UserRepository) GetAllUsers() ([]*user.User, error) {
 }
 
 // CreateUserは新しいユーザーを作成する
-func (ur *UserRepository) CreateUser(u *user.User) error {
+func (ur *UserRepository) CreateUser(u user.User) error {
 	if err := ur.DB.Create(u).Error; err != nil {
 		return err
 	}
