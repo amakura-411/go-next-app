@@ -11,6 +11,9 @@ services:
       - "1323:1323"
     tty: true # コンテナの永続化 
     stdin_open: true
+    # databaeの後に起動する
+    depends_on:
+      - database
   frontend:
     container_name: frontend
     build:

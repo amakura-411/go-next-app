@@ -2,31 +2,24 @@ package router
 
 import (
 	"fmt"
+	"my-app/infrastructure/database"
 	"net/http"
 
 	"github.com/labstack/echo"
+	"gorm.io/gorm"
 )
 
-func InitRouting(e *echo.Echo) error {
+func InitRouting(e *echo.Echo, db *gorm.DB) error {
 	fmt.Println("InitRouting!!")
+	userRepository := database.NewUserRepository(db)
 
-	// user
-	gu := e.Group("/user")
-	gu.GET("", func(c echo.Context) error {
-		fmt.Println("GET /user")
-		return c.String(http.StatusOK, "GET /user")
-	})
-	gu.POST("", func(c echo.Context) error {
-		fmt.Println("POST /user")
-		return c.String(http.StatusOK, "POST /user")
-	})
-	gu.PUT("", func(c echo.Context) error {
-		fmt.Println("PUT /user")
-		return c.String(http.StatusOK, "PUT /user")
-	})
-	gu.DELETE("", func(c echo.Context) error {
-		fmt.Println("DELETE /user")
-		return c.String(http.StatusOK, "DELETE /user")
+	userGroup := e.Group("/users")
+	userGroup.GET("", func(c echo.Context) error {
+		users, err := userRepository.GetAllUsers()
+		if err != nil {
+			return err
+		}
+		return c.JSON(http.StatusOK, users)
 	})
 
 	return nil

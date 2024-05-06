@@ -1,4 +1,4 @@
-package domain
+package entity
 
 import (
 	"errors"
@@ -11,20 +11,26 @@ import (
 )
 
 type User struct {
+
 	// user_idは、同一なものは存在しないようにする
 	// その同一性の保持はUser_id.goで担保する
-	user_id  string
-	username string
-	password string
-	icon     string
+	User_id  string `gorm:"primaryKey"`
+	Username string
+	Password string
+	Icon     string
 	// time.Timeは、Goの標準ライブラリに含まれる型で、日時を表すための型
-	created_at time.Time
-	update_at  time.Time
+	Created_at time.Time
+	Updated_at time.Time
+}
+
+// テーブル名を指定する
+func (User) TableName() string {
+	return "Users"
 }
 
 func NewUser(username, password, icon string, create_at time.Time) (User, error) {
 	user := &User{}
-	user.user_id = uuid.New().String()
+	user.User_id = uuid.New().String()
 
 	// usernameのバリデーション
 	err := user.changeUsername(username)
@@ -39,18 +45,18 @@ func NewUser(username, password, icon string, create_at time.Time) (User, error)
 	}
 	// iconが空文字の場合、デフォルトのアイコンを代入
 	if icon == "" {
-		user.icon = "default"
+		user.Icon = "default"
 	} else {
-		user.icon = icon
+		user.Icon = icon
 	}
 
 	// created_atに値がない場合、現在時刻を代入
 	if create_at.IsZero() {
-		user.created_at = time.Now()
+		user.Created_at = time.Now()
 	} else {
-		user.created_at = create_at
+		user.Created_at = create_at
 	}
-	user.update_at = user.created_at
+	user.Updated_at = time.Now()
 	return *user, nil
 }
 
@@ -65,7 +71,7 @@ func (user *User) changeUsername(username string) (err error) {
 	if err != nil {
 		return err
 	}
-	user.username = username
+	user.Username = username
 	return nil
 }
 
@@ -83,7 +89,7 @@ func (user *User) changePassword(password string) error {
 		fmt.Println("failed to create hashed password: %w", err)
 		return err
 	}
-	user.password = hashedPassword
+	user.Password = hashedPassword
 	return nil
 }
 

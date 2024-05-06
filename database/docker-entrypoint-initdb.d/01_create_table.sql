@@ -42,6 +42,17 @@ CREATE TABLE Projects_Users (
   FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
 
+-- タスクステータス
+CREATE TABLE TaskStatus (
+  status_id INT PRIMARY KEY,
+  status_name VARCHAR(50) NOT NULL
+);
+
+-- タスク優先度
+CREATE TABLE TaskPriority (
+  priority_id INT PRIMARY KEY,
+  priority_name VARCHAR(50) NOT NULL
+);
 
 -- タスク
 CREATE TABLE Tasks (
@@ -66,19 +77,6 @@ CREATE TABLE Tasks (
   FOREIGN KEY (status_id) REFERENCES TaskStatus(status_id),
   FOREIGN KEY (priority_id) REFERENCES TaskPriority(priority_id)
 );
-
--- タスクステータス
-CREATE TABLE TaskStatus (
-  status_id INT PRIMARY KEY,
-  status_name VARCHAR(50) NOT NULL
-);
-
--- タスク優先度
-CREATE TABLE TaskPriority (
-  priority_id INT PRIMARY KEY,
-  priority_name VARCHAR(50) NOT NULL
-);
-
 
 
 -- プロジェクトとタスクの関係
@@ -113,8 +111,9 @@ CREATE TABLE Schedules(
   start_date TIMESTAMP NOT NULL,
   end_date TIMESTAMP NOT NULL,
   priority ENUM('low', 'middle', 'high') DEFAULT 'middle',
-  done_flag BOOLEAN DEFAULT FALSE,
+  done_flag BOOLEAN DEFAULT FALSE
 );
+
 
 -- タスクと通知の関係
 CREATE TABLE Tasks_Notifications (

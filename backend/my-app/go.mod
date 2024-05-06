@@ -1,4 +1,4 @@
-module go-next-app/backend/my-app
+module my-app
 
 go 1.22
 

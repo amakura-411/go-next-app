@@ -2,21 +2,22 @@ package server
 
 import (
 	"fmt"
-	"go-next-app/backend/my-app/infrastructure/router"
 	"log"
+	"my-app/infrastructure/router"
 
 	"github.com/labstack/echo"
+	"gorm.io/gorm"
 )
 
-func StartServer() {
-	fmt.Println("Start Server!!")
+func StartServer(db *gorm.DB) {
 
+	fmt.Println("Start Server!!")
 	e := echo.New()
 	if e == nil {
 		log.Fatal("echo.New() error")
 	}
 
-	err := router.InitRouting(e)
+	err := router.InitRouting(e, db)
 	if err != nil {
 		log.Fatal(err)
 	}
