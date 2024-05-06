@@ -3,19 +3,21 @@ services:
   backend:
     container_name: backend
     build:
-      context: ./backend/build
-      dockerfile: dockerfile 
-    image: golang
+      context: ./backend
+    image: golang:1.22.2
     volumes:
       - ./backend/my-app:/backend/my-app
     ports:
       - "1323:1323"
     tty: true # コンテナの永続化 
+    stdin_open: true
+    # databaeの後に起動する
+    depends_on:
+      - database
   frontend:
     container_name: frontend
     build:
-      context: ./frontend/build  # Dockerfileのビルドコンテキストの場所
-      dockerfile: dockerfile     # Dockerfileの名前（必要に応じて変更）
+      context: ./frontend
     image: node:21.1.0
     volumes:
       - ./frontend/my-app:/frontend/my-app
@@ -31,8 +33,7 @@ services:
     container_name: database
     image: mysql:5.7
     build :
-      context: ./database/build
-      dockerfile: dockerfile
+      context: ./database
     volumes:
       - ./database/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     environment:
