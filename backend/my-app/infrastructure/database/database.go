@@ -11,8 +11,7 @@ import (
 
 func InitConnection() (*gorm.DB, error) {
 	fmt.Println("Init Connection Start")
-	dsn := "root:password@tcp(localhost:3306)/mydb/mydb?charset=utf8mb4&parseTime=True&loc=Local"
-	// gormでのDB接続処理
+	dsn := "root:password@tcp(database:3306)/mydb"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Printf("DB接続エラー: %v", err)

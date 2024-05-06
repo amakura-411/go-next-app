@@ -10,13 +10,15 @@ import (
 func main() {
 	fmt.Println("Hello World!!")
 
-	server.StartServer()
-
-	// db接続テスト
-	_, err := database.InitConnection()
+	// データベース接続
+	db, err := database.InitConnection()
 	if err != nil {
-		fmt.Println("DB接続エラー")
+		fmt.Println("データベース接続エラー")
+		// プログラム終了
 		return
 	}
-	fmt.Println("DB接続成功")
+	defer database.CloseConnection(db)
+
+	// サーバー起動
+	server.StartServer()
 }

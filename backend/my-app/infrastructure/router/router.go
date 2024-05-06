@@ -10,11 +10,6 @@ import (
 func InitRouting(e *echo.Echo) error {
 	fmt.Println("InitRouting!!")
 
-	// hello
-	e.GET("/hello", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello, World!")
-	})
-
 	// user
 	gu := e.Group("/user")
 	gu.GET("", func(c echo.Context) error {
