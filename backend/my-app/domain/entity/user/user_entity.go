@@ -1,4 +1,4 @@
-package entity
+package user
 
 import (
 	"errors"
@@ -30,15 +30,14 @@ func (User) TableName() string {
 
 func NewUser(username string, password string, icon *string, create_at *time.Time) (User, error) {
 	user := &User{}
-	user.User_id = uuid.New().String()
-	fmt.Println(user)
+	// user.User_id = uuid.New().String()
+	// fmt.Println(user)
 
 	// usernameのバリデーション
 	err := user.changeUsername(username)
 	if err != nil {
 		return *user, err
 	}
-	fmt.Println(user)
 
 	// passwordのバリデーション
 	err = user.changePassword(password)
@@ -61,6 +60,24 @@ func NewUser(username string, password string, icon *string, create_at *time.Tim
 	}
 	user.Updated_at = time.Now()
 	fmt.Println(user)
+	return *user, nil
+}
+
+func UpdateUser(username string, icon string) (User, error) {
+	user := &User{}
+	// usernameのバリデーション
+	err := user.changeUsername(username)
+	if err != nil {
+		return *user, err
+	}
+
+	// iconが空文字の場合、デフォルトのアイコンを代入
+	if icon == "" {
+		user.Icon = "default"
+	} else {
+		user.Icon = icon
+	}
+	user.Updated_at = time.Now()
 	return *user, nil
 }
 
@@ -114,4 +131,13 @@ func (user *User) createHashedPassword(password string) (string, error) {
 	}
 
 	return string(hashBytes), nil
+}
+
+// 同じIDの時、同じユーザーであることをみなす
+func (user *User) Equals(other *User) bool {
+	return user.User_id == other.User_id
+}
+
+func GenerateUserID() string {
+	return uuid.New().String()
 }

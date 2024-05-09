@@ -2,8 +2,8 @@ package router
 
 import (
 	"fmt"
-	"my-app/domain/entity"
-	"my-app/infrastructure/database"
+	userEntity "my-app/domain/entity/user"
+	userRepository "my-app/infrastructure/database/user"
 	"net/http"
 
 	"github.com/labstack/echo"
@@ -12,10 +12,13 @@ import (
 
 func InitRouting(e *echo.Echo, db *gorm.DB) error {
 	fmt.Println("InitRouting!!")
-	userRepository := database.NewUserRepository(db)
+
+	// ========================================
+	// USERS
 	userGroup := e.Group("/users")
+	userRepository := userRepository.NewUserRepository(db)
+
 	userGroup.GET("", func(c echo.Context) error {
-		fmt.Println("/usersへのアクセス")
 		users, err := userRepository.GetAllUsers()
 		if err != nil {
 			return err
@@ -24,34 +27,45 @@ func InitRouting(e *echo.Echo, db *gorm.DB) error {
 	})
 
 	userGroup.GET("/:id", func(c echo.Context) error {
-		fmt.Println("/users/:idへのアクセス")
 		user, err := userRepository.GetUserByID(c.Param("id"))
 		if err != nil {
+			fmt.Println("error:userRepository.GetUserByID", err)
 			return err
 		}
 		return c.JSON(http.StatusOK, user)
 	})
 
 	userGroup.POST("", func(c echo.Context) error {
-		fmt.Println("/usersへのPOSTアクセス")
 
 		// JSONで受け取ったデータを格納するための構造体
-		var newUser entity.User
+		var newUser userEntity.User
 
 		// リクエストボディからデータを取得
 		if err := c.Bind(&newUser); err != nil {
 			return err
 		}
 
-		// 一応、受け取ったデータを表示
-		fmt.Println(newUser)
-
 		// ここでentity.Userを作成して、それを引数に渡す
-		user, err := entity.NewUser(newUser.Username, newUser.Password, &newUser.Icon, &newUser.Created_at)
+		user, err := userEntity.NewUser(newUser.Username, newUser.Password, &newUser.Icon, &newUser.Created_at)
 		if err != nil {
 			return err
 		}
-		fmt.Println(user)
+
+		// uuidの生成
+		existFlag := true
+		for i := 0; i < 5; i++ {
+			id := userEntity.GenerateUserID()
+			fmt.Println("i:", i, id)
+			existFlag = userRepository.CheckUserID(id)
+			fmt.Println("existFlag:", existFlag)
+			if existFlag == true {
+				user.User_id = id
+				break
+			}
+		}
+		if user.User_id == "" {
+			return fmt.Errorf("failed to generate user_id")
+		}
 
 		err = userRepository.CreateUser(user)
 		if err != nil {
@@ -59,6 +73,27 @@ func InitRouting(e *echo.Echo, db *gorm.DB) error {
 		}
 		return c.JSON(http.StatusOK, user)
 	})
+
+	// userGroup.PUT("/:id", func(c echo.Context) error {
+
+	// 	var updateUser userEntity.User
+
+	// 	if err := c.Bind(&updateUser); err != nil {
+	// 		return err
+	// 	}
+	// 	user, err := userEntity.UpdateUser(updateUser.Username, updateUser.Icon)
+	// 	if err != nil {
+	// 		fmt.Println("error:entity.UpdateUser", err)
+	// 		return err
+	// 	}
+
+	// 	err = userRepository.UpdateUser(c.Param("id"), &user)
+	// 	if err != nil {
+	// 		return err
+	// 	}
+
+	// 	return c.JSON(http.StatusOK, user)
+	// })
 
 	return nil
 }
