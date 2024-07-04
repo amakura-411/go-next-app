@@ -11,7 +11,6 @@ import (
 )
 
 func InitRouting(e *echo.Echo, db *gorm.DB) error {
-	fmt.Println("InitRouting!!")
 	userRepository := database.NewUserRepository(db)
 	userGroup := e.Group("/users")
 	userGroup.GET("", func(c echo.Context) error {
