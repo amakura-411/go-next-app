@@ -64,6 +64,34 @@ func NewUser(username string, password string, icon *string, create_at *time.Tim
 	return *user, nil
 }
 
+func UpdateUserInfo(id string, username string, icon *string) (User, error) {
+	user := &User{}
+
+	// idをセット
+	if id == "" {
+		return *user, errors.New("id is required")
+	}
+	user.User_id = id
+
+	// usernameのバリデーション
+	if username != "" {
+		err := user.changeUsername(username)
+		if err != nil {
+			return *user, err
+		}
+	}
+
+	// iconが空文字の場合、デフォルトのアイコンを代入
+	if icon == nil || *icon == "" {
+		user.Icon = "default"
+	} else {
+		user.Icon = *icon
+	}
+
+	user.Updated_at = time.Now()
+	return *user, nil
+}
+
 func (user *User) changeUsername(username string) (err error) {
 	// あとでバリデーションで処理するが、ひとまずここで実装
 	if username == "" {
@@ -75,6 +103,7 @@ func (user *User) changeUsername(username string) (err error) {
 	if err != nil {
 		return err
 	}
+	fmt.Println("username:", username)
 	user.Username = username
 	return nil
 }

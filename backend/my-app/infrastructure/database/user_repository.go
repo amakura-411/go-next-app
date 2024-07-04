@@ -1,6 +1,8 @@
 package database
 
 import (
+	"errors"
+	"fmt"
 	user "my-app/domain/entity"
 
 	"gorm.io/gorm"
@@ -20,8 +22,9 @@ func NewUserRepository(db *gorm.DB) *UserRepository {
 func (ur *UserRepository) GetUserByID(id string) (*user.User, error) {
 	var user user.User
 
-	if err := ur.DB.Find(&user, "User_id = ?", id).Error; err != nil {
-		return nil, err
+	if err := ur.DB.First(&user, "User_id = ?", id).Error; err != nil {
+		fmt.Println(`user not found`)
+		return nil, errors.New("user not found")
 	}
 	return &user, nil
 }
@@ -46,7 +49,17 @@ func (ur *UserRepository) CreateUser(u user.User) error {
 
 // UpdateUserはユーザー情報を更新する
 func (ur *UserRepository) UpdateUser(u *user.User) error {
-	if err := ur.DB.Save(u).Error; err != nil {
+	// usernameとiconと更新日時だけを更新する
+	// もし、usernameが空文字の場合、それは更新しない
+	if u.Username == "" {
+		fmt.Println(`username is empty`)
+		if err := ur.DB.Model(&user.User{}).Where("User_id = ?", u.User_id).Updates(map[string]interface{}{"Icon": u.Icon, "Updated_at": u.Updated_at}).Error; err != nil {
+			return err
+		}
+		return nil
+	}
+
+	if err := ur.DB.Model(&user.User{}).Where("User_id = ?", u.User_id).Updates(map[string]interface{}{"Username": u.Username, "Icon": u.Icon, "Updated_at": u.Updated_at}).Error; err != nil {
 		return err
 	}
 	return nil

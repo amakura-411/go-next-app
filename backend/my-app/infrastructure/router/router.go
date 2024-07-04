@@ -26,8 +26,9 @@ func InitRouting(e *echo.Echo, db *gorm.DB) error {
 		fmt.Println("/users/:idへのアクセス")
 		user, err := userRepository.GetUserByID(c.Param("id"))
 		if err != nil {
-			return err
+			return c.JSON(http.StatusNotFound, "user not found")
 		}
+
 		return c.JSON(http.StatusOK, user)
 	})
 
@@ -57,6 +58,40 @@ func InitRouting(e *echo.Echo, db *gorm.DB) error {
 			return err
 		}
 		return c.JSON(http.StatusOK, user)
+	})
+
+	// ユーザー情報の更新
+	userGroup.PUT("/:id", func(c echo.Context) error {
+		var updateUser entity.User
+
+		// idを取得
+		updateUser.User_id = c.Param("id")
+
+		// 該当のuserがいるかどうかを確認
+		_, err := userRepository.GetUserByID(updateUser.User_id)
+		if err != nil {
+			return c.JSON(http.StatusNotFound, "user not found")
+		}
+
+		if err := c.Bind(&updateUser); err != nil {
+			return err
+		}
+
+		fmt.Println("updateUserInfo")
+		// usernameとiconの値を用い、updateUserInfoを作成
+		updateUserInfo, err := entity.UpdateUserInfo(updateUser.User_id, updateUser.Username, &updateUser.Icon)
+		if err != nil {
+			return err
+		}
+		fmt.Println(updateUserInfo)
+
+		// databaseのUpdateUserを呼び出す
+		err = userRepository.UpdateUser(&updateUserInfo)
+		if err != nil {
+			return err
+		}
+
+		return c.JSON(http.StatusOK, nil)
 	})
 
 	return nil
