@@ -51,6 +51,14 @@ func InitConnection() (*gorm.DB, error) {
 	return DB, nil
 }
 
+func GetDB() *gorm.DB {
+	if DB == nil {
+		InitConnection()
+	}
+
+	return DB
+}
+
 func CloseConnection(db *gorm.DB) {
 	sqlDB, err := db.DB()
 	if err != nil {

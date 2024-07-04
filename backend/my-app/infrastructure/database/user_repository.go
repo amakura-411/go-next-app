@@ -1,7 +1,6 @@
 package database
 
 import (
-	"fmt"
 	user "my-app/domain/entity"
 
 	"gorm.io/gorm"
@@ -14,24 +13,24 @@ type UserRepository struct {
 
 // NewUserRepositoryはユーザーリポジトリを初期化する
 func NewUserRepository(db *gorm.DB) *UserRepository {
-	fmt.Println("NewUserRepository")
 	return &UserRepository{DB: db}
 }
 
 // GetUserByIDは指定されたIDのユーザーを取得する
 func (ur *UserRepository) GetUserByID(id string) (*user.User, error) {
-	var u user.User
-	if err := ur.DB.First(&u, id).Error; err != nil {
+	var user user.User
+
+	if err := ur.DB.Find(&user, "User_id = ?", id).Error; err != nil {
 		return nil, err
 	}
-	return &u, nil
+	return &user, nil
 }
 
 // GetAllUsersは全てのユーザーを取得する
 func (ur *UserRepository) GetAllUsers() ([]*user.User, error) {
 	var users []*user.User
+
 	if err := ur.DB.Find(&users).Error; err != nil {
-		fmt.Println("errorです")
 		return nil, err
 	}
 	return users, nil
@@ -60,5 +59,3 @@ func (ur *UserRepository) DeleteUserByID(id int) error {
 	}
 	return nil
 }
-
-// 他のメソッド...
