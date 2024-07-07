@@ -66,9 +66,11 @@ func (ur *UserRepository) UpdateUser(u *user.User) error {
 }
 
 // DeleteUserByIDは指定されたIDのユーザーを削除する
-func (ur *UserRepository) DeleteUserByID(id int) error {
-	if err := ur.DB.Delete(&user.User{}, id).Error; err != nil {
+func (ur *UserRepository) DeleteUserByID(id string) error {
+	var user user.User
+	if err := ur.DB.Model(&user).Where("User_id = ?", id).Delete(&user).Error; err != nil {
 		return err
 	}
+
 	return nil
 }
