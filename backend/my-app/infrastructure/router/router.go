@@ -94,5 +94,27 @@ func InitRouting(e *echo.Echo, db *gorm.DB) error {
 		return c.JSON(http.StatusOK, nil)
 	})
 
+	// ユーザー情報の削除
+	userGroup.DELETE("/:id", func(c echo.Context) error {
+		var deleteUser entity.User
+		var err error
+
+		// idを取得
+		deleteUser.User_id = c.Param("id")
+
+		// そのユーザーがいるかを確認
+
+		if _, err = userRepository.GetUserByID(deleteUser.User_id); err != nil {
+			return c.JSON(http.StatusNotFound, "user not found")
+		}
+
+		// 削除
+		if err = userRepository.DeleteUserByID(deleteUser.User_id); err != nil {
+			return c.JSON(http.StatusNotFound, "削除に失敗しました")
+		}
+
+		return c.JSON(http.StatusOK, nil)
+	})
+
 	return nil
 }
